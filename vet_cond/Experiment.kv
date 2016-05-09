@@ -1,0 +1,102 @@
+#:kivy 1.9.0
+#@PydevCodeAnalysisIgnore
+#:import knspace kivy.uix.behaviors.knspace.knspace
+#:import clock time.clock
+#:import Factory kivy.factory.Factory
+
+
+<RootStage>:
+    knsname: 'exp_root'
+    on_started: if self.started: knspace.time_line.set_active_slice('Init')
+    on_finished:
+        if self.finished: knspace.time_line.set_active_slice('Done', after='Posthab')
+        if self.finished: knspace.gui_start_stop.state = 'normal'
+        if self.finished: app.root_stage = None
+    MoaStage:
+        knsname: 'exp_dev_init'
+        on_started: if self.started: root.init_devices()
+    MoaStage:
+        knsname: 'exp_animal'
+        repeat: -1
+        on_count: knspace.time_line.set_active_slice('Ready', after='Init')
+        on_started:
+            if self.started: knspace.time_line.set_active_slice('Ready', after='Init')
+            if self.started: knspace.mcdaq.set_state(high=['ir_leds'])
+        on_finished: if self.finished: knspace.mcdaq.set_state(low=['ir_leds'])
+        DigitalGateStage:
+            knsname: 'exp_animal_wait'
+            device: Factory.ButtonChannel(button=knspace.next_animal_dev)
+            exit_state: True
+        MoaStage:
+            knsname: 'exp_animal_init'
+            on_started: if self.started: root.configure_animal_settings()
+        Delay:
+            knsname: 'exp_prehab'
+            delay: root.prehab
+            on_started: if self.started: knspace.time_line.set_active_slice('Prehab')
+        MoaStage:
+            knsname: 'exp_trial_root'
+            repeat: root.trial_repeat
+            on_count: knspace.time_line.update_slice_attrs('Trial', text='Trial {}'.format(self.count))
+            Delay:
+                knsname: 'exp_prerecord'
+                on_started:
+                    if self.started: root.record_start()
+                    if self.started: knspace.time_line.set_active_slice('Pre')
+                delay: root.prerecord
+
+            Delay:
+                knsname: 'exp_trial'
+                order: 'parallel'
+                delay: root.trial_duration
+                on_started:
+                    if self.started: root.update_time('trial_ts')
+                    if self.started: knspace.time_line.set_active_slice('Trial')
+                MoaStage:
+                    knsname: 'exp_shock_root'
+                    disabled: not root.shock_duration
+                    Delay:
+                        knsname: 'exp_shock_pre'
+                        delay: root.shock_delay
+                    Delay:
+                        knsname: 'exp_shock'
+                        on_started: if self.started: root.update_time('shock_ts')
+                        on_finished: if self.finished: root.update_time('shock_te')
+                        delay: root.shock_duration
+                        on_started: if self.started: knspace.mcdaq.set_state(high=['shocker'])
+                        on_finished: if self.finished: knspace.mcdaq.set_state(low=['shocker'])
+                MoaStage:
+                    knsname: 'exp_tone_root'
+                    disabled: not root.tone_duration
+                    Delay:
+                        knsname: 'exp_tone_pre'
+                        delay: root.tone_delay
+                    Delay:
+                        knsname: 'exp_tone'
+                        on_started: if self.started: root.update_time('tone_ts')
+                        on_finished: if self.finished: root.update_time('tone_te')
+                        delay: root.tone_duration
+                        on_started: if self.started: knspace.mcdaq.set_state(high=['tone'])
+                        on_finished: if self.finished: knspace.mcdaq.set_state(low=['tone'])
+
+            Delay:
+                knsname: 'exp_postrecord'
+                on_started: if self.started: knspace.time_line.set_active_slice('Post')
+                on_finished:
+                    if self.finished: root.record_stop()
+                    if self.finished: root.update_time('trial_te')
+                delay: root.postrecord
+            Delay:
+                delay_type: 'random'
+                range: root.iti_range
+                on_delay: knspace.time_line.update_slice_attrs('ITI', duration=self.delay)
+                on_started:
+                    if self.started: root.write_log()
+                    if self.started: knspace.time_line.set_active_slice('ITI')
+        Delay:
+            knsname: 'exp_posthab'
+            delay: root.posthab
+            on_started: if self.started: knspace.time_line.set_active_slice('Posthab')
+    MoaStage:
+        knsname: 'exp_dev_stop'
+        on_started: if self.started: root.stop_devices()

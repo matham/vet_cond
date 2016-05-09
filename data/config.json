@@ -1,0 +1,87 @@
+{
+    "app": {
+        "inspect": true
+    },
+    "barst_server": {
+        "server_path": "",
+        "server_pipe": ""
+    },
+    "experiment": {
+        "log_name_pat": "{animal}_%m-%d-%Y_%I-%M-%S_%p.csv",
+        "posthab": 60,
+        "postrecord": 5,
+        "prehab": 60,
+        "prerecord": 5,
+        "record_video": true,
+        "trial_opts": {
+            "backward": {
+                "duration": 0,
+                "iti": [
+                    45,
+                    60
+                ],
+                "repeat": 3,
+                "shock": [
+                    0,
+                    3
+                ],
+                "tone": [
+                    5,
+                    3
+                ]
+            },
+            "condition": {
+                "duration": 0,
+                "iti": [
+                    45,
+                    60
+                ],
+                "repeat": 3,
+                "shock": [
+                    2,
+                    3
+                ],
+                "tone": [
+                    0,
+                    3
+                ]
+            },
+            "control": {
+                "duration": 15,
+                "iti": [
+                    45,
+                    60
+                ],
+                "repeat": 3,
+                "shock": [
+                    0,
+                    0
+                ],
+                "tone": [
+                    0,
+                    0
+                ]
+            }
+        },
+        "video_name_pat": "{animal}_trial{trial}_%m-%d-%Y_%I-%M-%S_%p.avi"
+    },
+    "rtv": {
+        "output_img_fmt": "gray",
+        "output_video_fmt": "full_NTSC",
+        "port": 0
+    },
+    "rtv_simulate": {
+        "filename": "Wildlife.mp4",
+        "output_img_fmt": ""
+    },
+    "switch_and_sense_8-8": {
+        "SAS_chan": 0,
+        "ir_leds_pin": 6,
+        "shocker_pin": 4,
+        "tone_pin": 5
+    },
+    "video_record": {
+        "filename": "",
+        "ofmt": "yuv420p"
+    }
+}
