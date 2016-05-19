@@ -1,0 +1,105 @@
+{
+    "vet_cond.devices.DAQOutDevice": {
+        "ir_leds_pin": [
+            "The pin number on the Switch and Sense 8/8 that is connected to and",
+            "controls the IR LEDs.",
+            ""
+        ],
+        "shocker_pin": [
+            "The pin number on the Switch and Sense 8/8 that is connected to and",
+            "controls the shocker.",
+            ""
+        ],
+        "tone_pin": [
+            "The pin number on the Switch and Sense 8/8 that is connected to and",
+            "controls the tone.",
+            ""
+        ]
+    },
+    "vet_cond.main.ConditioningApp": {
+        "inspect": []
+    },
+    "vet_cond.stages.RootStage": {
+        "log_name_pat": [
+            "The pattern that will be used to generate the video filenames for each",
+            "trial. It is generated as follows::",
+            "",
+            "    strftime(log_name_pat.format(**{'animal': animal_id}))",
+            "",
+            "Which basically means that all instances of ``{animal}`` is replaced by the",
+            "animal name given in the GUI. Then, it's is passed to `strftime` that",
+            "formats any time parameters to get the name used for that animal.",
+            "",
+            "If the filename matches an existing file, the new data will be appended to",
+            "that file.",
+            ""
+        ],
+        "posthab": [
+            "The amount of time to wait before finishing for the animal after the",
+            "end of trials.",
+            ""
+        ],
+        "postrecord": [
+            "The amount of time after each trial which video should continue to be",
+            "recorded. It is in addition to any ITI.",
+            ""
+        ],
+        "prehab": [
+            "The amount of time to wait habituating the animal before the start of",
+            "trials.",
+            ""
+        ],
+        "prerecord": [
+            "The amount of time before each trial when video should be started",
+            "being recorded. It is in addition to any ITI.",
+            ""
+        ],
+        "record_video": [
+            "Whether video should be recorded for this experiment.",
+            "    ",
+            ""
+        ],
+        "trial_opts": [
+            "A dictionary that describes the available experiments, which will be",
+            "available from the GUI to choose from.",
+            "",
+            "The keys are name of the experiment types and its values are dictionaries",
+            "describing the structure of each experiment type.",
+            "",
+            "The structure dictionaries each has the following keys:",
+            "",
+            "    `repeat`: int",
+            "        The number of trials for that experiment.",
+            "    `shock`: 2-tuple of floats",
+            "        The first element is the delay from the start of the trial until",
+            "        the shock start. The second element is the duration of the shock",
+            "        after that delay. A duration of zero will disable the shock.",
+            "    `tone`: 2-tuple of floats",
+            "        The first element is the delay from the start of the trial until",
+            "        the tone starts. The second element is the duration of the tone",
+            "        after that delay. A duration of zero will disable the tone.",
+            "    `iti`: 2-tuple of floats",
+            "        The minimum and maximum duration of the ITI. A value will be chosen",
+            "        uniformly at random from that range.",
+            "    `duration`: float",
+            "        The duration of the trial. This is used when both shock and tone",
+            "        are disabled and the trial is then is just a delay of this length.",
+            ""
+        ],
+        "video_name_pat": [
+            "The pattern that will be used to generate the video filenames for each",
+            "trial. It is generated as follows::",
+            "",
+            "    name = strftime(video_name_pat.format(**{'trial': trial_number,",
+            "                    'animal': animal_id}))",
+            "",
+            "Which basically means that all instances of ``{trial}`` is replaced by",
+            "the current trial number and ``{animal}`` is replaced by the animal",
+            "name given in the GUI. Then, it's is passed to `strftime` that formats",
+            "any time parameters to get the name used for that trial/animal.",
+            "",
+            "If the filename already exists an error will be raised.",
+            ""
+        ]
+    }
+}

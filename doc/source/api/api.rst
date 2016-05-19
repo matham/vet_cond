@@ -5,10 +5,9 @@
 ####################
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    vet_cond.rst
    devices.rst
    stages.rst
-   graphics.rst
    main.rst

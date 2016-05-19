@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-'''The stages of the experiment.
+'''Stages
+===========
+
+The stages of the experiment.
 '''
 
 from time import strftime
@@ -16,42 +19,105 @@ from kivy.uix.behaviors.knspace import knspace
 from cplcom.moa.device.ffplayer import FFPyPlayerDevice, FFPyWriterDevice
 from cplcom.moa.device.barst_server import Server
 from cplcom.moa.device.rtv import RTVChan
-from cplcom.moa.stages import RootStageBase
+from cplcom.moa.stages import ConfigStageBase
 from cplcom.moa.app import app_error
 
 from vet_cond.devices import DAQOutDevice, DAQOutDeviceSim
 
+__all__ = ('RootStage', )
 
-class RootStage(RootStageBase):
+
+class RootStage(ConfigStageBase):
+    '''The root stage of the experiment.
+    '''
 
     __settings_attrs__ = (
         'prehab', 'prerecord', 'posthab', 'postrecord', 'trial_opts',
         'video_name_pat', 'log_name_pat', 'record_video')
 
     server = ObjectProperty(None, allownone=True)
+    '''The Barst server instance,
+    :class:`~cplcom.moa.device.barst_server.Server`.
+    '''
 
     mcdaq = ObjectProperty(None, allownone=True)
+    '''The Switch and Sense device, :class:`~vet_cond.devices.DAQOutDevice`
+    when using actual hardware, or a
+    :class:`~vet_cond.devices.DAQOutDeviceSim` when :attr:`simulate` the
+    hardware.
+    '''
 
     rtv = ObjectProperty(None, allownone=True)
+    '''The RTV video acquisition device
+    :class:`~cplcom.moa.device.rtv.RTVChan` when using actual hardware, or a
+    :class:`~cplcom.moa.device.ffplayer.FFPyPlayerDevice` when
+    :attr:`simulate` the hardware.
+    '''
 
     ffwriter = None
+    '''The :attr:`ffwriters` instance used in the current trial.
+    '''
 
     ffwriters = []
+    '''A list of :class:`~cplcom.moa.device.ffplayer.FFPyWriterDevice`
+    instances equal to the number of trials, with each instance being a writer
+    for the corresponding trial. They are all created at once at the start of
+    running the subject.
+    '''
 
     video_name_pat = StringProperty(
         '{animal}_trial{trial}_%m-%d-%Y_%I-%M-%S_%p.avi')
+    '''The pattern that will be used to generate the video filenames for each
+    trial. It is generated as follows::
+
+        name = strftime(video_name_pat.format(**{'trial': trial_number,
+                        'animal': animal_id}))
+
+    Which basically means that all instances of ``{trial}`` is replaced by
+    the current trial number and ``{animal}`` is replaced by the animal
+    name given in the GUI. Then, it's is passed to `strftime` that formats
+    any time parameters to get the name used for that trial/animal.
+
+    If the filename already exists an error will be raised.
+    '''
 
     log_name_pat = StringProperty('{animal}_%m-%d-%Y_%I-%M-%S_%p.csv')
+    '''The pattern that will be used to generate the video filenames for each
+    trial. It is generated as follows::
+
+        strftime(log_name_pat.format(**{'animal': animal_id}))
+
+    Which basically means that all instances of ``{animal}`` is replaced by the
+    animal name given in the GUI. Then, it's is passed to `strftime` that
+    formats any time parameters to get the name used for that animal.
+
+    If the filename matches an existing file, the new data will be appended to
+    that file.
+    '''
 
     prehab = NumericProperty(60)
+    '''The amount of time to wait habituating the animal before the start of
+    trials.
+    '''
 
     posthab = NumericProperty(60)
+    '''The amount of time to wait before finishing for the animal after the
+    end of trials.
+    '''
 
     prerecord = NumericProperty(5)
+    '''The amount of time before each trial when video should be started
+    being recorded. It is in addition to any ITI.
+    '''
 
     postrecord = NumericProperty(5)
+    '''The amount of time after each trial which video should continue to be
+    recorded. It is in addition to any ITI.
+    '''
 
     record_video = BooleanProperty(True)
+    '''Whether video should be recorded for this experiment.
+    '''
 
     trial_opts = ObjectProperty({
         'control': {'repeat': 3, 'shock': (0, 0), 'tone': (0, 0),
@@ -60,6 +126,31 @@ class RootStage(RootStageBase):
                      'duration': 0, 'iti': (45, 60)},
         'condition': {'repeat': 3, 'shock': (2, 3), 'tone': (0, 3),
                       'duration': 0, 'iti': (45, 60)}})
+    '''A dictionary that describes the available experiments, which will be
+    available from the GUI to choose from.
+
+    The keys are name of the experiment types and its values are dictionaries
+    describing the structure of each experiment type.
+
+    The structure dictionaries each has the following keys:
+
+        `repeat`: int
+            The number of trials for that experiment.
+        `shock`: 2-tuple of floats
+            The first element is the delay from the start of the trial until
+            the shock start. The second element is the duration of the shock
+            after that delay. A duration of zero will disable the shock.
+        `tone`: 2-tuple of floats
+            The first element is the delay from the start of the trial until
+            the tone starts. The second element is the duration of the tone
+            after that delay. A duration of zero will disable the tone.
+        `iti`: 2-tuple of floats
+            The minimum and maximum duration of the ITI. A value will be chosen
+            uniformly at random from that range.
+        `duration`: float
+            The duration of the trial. This is used when both shock and tone
+            are disabled and the trial is then is just a delay of this length.
+    '''
 
     def on_trial_opts(self, *largs):
         for _, opts in self.trial_opts.items():
@@ -70,50 +161,97 @@ class RootStage(RootStageBase):
             opts['iti'] = float(opts['iti'][0]), float(opts['iti'][1])
 
     animal_id = StringProperty('')
+    '''The animal name acquired form the GUI.
+    '''
 
     trial_type = StringProperty('')
+    '''The experiment type from :attr:`trial_opts` for this animal.
+    '''
 
     simulate = BooleanProperty(False)
+    '''Whether the user has chosen to simulate the experiment. When ``True``,
+    no actual hardware is required and all the hardware will be emulated
+    by software and virtual devices. E.g. a video player for the video
+    acquisition system.
+    '''
 
     trial_repeat = NumericProperty(0)
+    '''The number of trials from :attr:`trial_opts` for this animal.
+    '''
 
     trial_duration = NumericProperty(0)
+    '''The trial duration from :attr:`trial_opts` for this animal.
+    '''
 
     shock_delay = NumericProperty(0)
+    '''The shock delay from :attr:`trial_opts` for this animal.
+    '''
 
     shock_duration = NumericProperty(0)
+    '''The shock duration from :attr:`trial_opts` for this animal.
+    '''
 
     tone_delay = NumericProperty(0)
+    '''The tone delay from :attr:`trial_opts` for this animal.
+    '''
 
     tone_duration = NumericProperty(0)
+    '''The tone duration from :attr:`trial_opts` for this animal.
+    '''
 
     iti_range = ObjectProperty((5, 10))
+    '''The ITI range from :attr:`trial_opts` for this animal.
+    '''
 
     tracker = None
+    '''The :class:`~moa.utils.ObjectStateTracker` instance used to
+    process the device activation and deactivation during startup and
+    shutdown.
+    '''
 
     frame_ts = 0
+    '''The video time at the most recent frame.
+    '''
 
     trial_stats = DictProperty({
         'shock_ts': -1, 'shock_te': -1, 'tone_ts': -1, 'tone_te': -1,
         'trial_ts': -1, 'trial_end': -1})
+    '''Trials stats of the tone, shock, and trial start and end times in video
+    time use for the log.
+    '''
 
     _fd = None
+    '''The log file handle.
+    '''
 
     _log_filename = ''
+    '''The filename of the current log file.
+    '''
 
-    def get_config_classes(self):
-        return {
+    @classmethod
+    def get_config_classes(cls):
+        d = {
             'barst_server': Server, 'switch_and_sense_8-8': DAQOutDevice,
             'rtv': RTVChan, 'rtv_simulate': FFPyPlayerDevice,
-            'experiment': self, 'video_record': FFPyWriterDevice}
+            'experiment': RootStage, 'video_record': FFPyWriterDevice}
+        d.update(ConfigStageBase.get_config_classes())
+        return d
 
     def clear(self, recurse=False, loop=False, **kwargs):
         super(RootStage, self).clear(recurse=recurse, loop=loop, **kwargs)
         if not loop:
             self.tracker = self.server = self.mcdaq = self.rtv = None
+            self.ffwriters = []
+            self.ffwriter = None
 
     @app_error
     def init_devices(self):
+        '''Called to start the devices during the init stage.
+        '''
+        settings = knspace.app.app_settings
+        for k, v in settings['experiment'].items():
+            setattr(self, k, v)
+
         time_line = knspace.time_line
         time_line.clear_slices()
         elems = (
@@ -127,7 +265,6 @@ class RootStage(RootStageBase):
 
         sim = self.simulate = knspace.gui_simulate.state == 'down'
         tracker = self.tracker = ObjectStateTracker()
-        settings = knspace.app.app_settings
         attr_map = {
             'shocker': knspace.gui_shocker, 'ir_leds': knspace.gui_ir_leds,
             'tone': knspace.gui_tone}
@@ -157,6 +294,8 @@ class RootStage(RootStageBase):
 
     @app_error
     def stop_devices(self):
+        '''Called to stop the devices during the stopping stage.
+        '''
         self.ffwriter = None
         if self._fd:
             self._fd.close()
@@ -180,6 +319,9 @@ class RootStage(RootStageBase):
 
     @app_error
     def configure_animal_settings(self):
+        '''Called to setup the experiment for the current animal before
+        the animal is started.
+        '''
         animal_id = self.animal_id = knspace.gui_animal_id.text
         trial_type = self.trial_type = knspace.gui_trial_type.text
         opts = self.trial_opts[trial_type]
@@ -232,6 +374,8 @@ class RootStage(RootStageBase):
             knspace.exp_animal_init.step_stage()
 
     def video_callback(self, *largs):
+        '''Called for each frame read from the viceo device.
+        '''
         pts, frame = self.rtv.last_img
         self.frame_ts = pts
         if self.ffwriter:
@@ -239,6 +383,8 @@ class RootStage(RootStageBase):
         knspace.display.update_img(frame)
 
     def record_start(self):
+        '''Called at the start of each recording to init the recorders.
+        '''
         stats = self.trial_stats
         for k in stats:
             stats[k] = -1
@@ -248,9 +394,13 @@ class RootStage(RootStageBase):
         self.ffwriter = self.ffwriters[knspace.exp_trial_root.count]
 
     def update_time(self, key):
+        '''Updates trial stats when an event occurs.
+        '''
         self.trial_stats[key] = self.frame_ts
 
     def record_stop(self):
+        '''Called at the end of each recording to stop the recorders.
+        '''
         w = self.ffwriter
         if w:
             self.ffwriter = self.ffwriters[knspace.exp_trial_root.count] = None
@@ -258,6 +408,8 @@ class RootStage(RootStageBase):
 
     @app_error
     def write_log(self):
+        '''Called after each trial to dump the trial stats to the log.
+        '''
         fd = self._fd
         if fd is None:
             return

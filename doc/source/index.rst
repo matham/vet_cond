@@ -1,6 +1,6 @@
-.. CPLCom documentation master file.
+.. VetCond documentation master file.
 
-Welcome to CPLCom's documentation!
+Welcome to VetCond's documentation!
 ===================================
 
 Contents:
@@ -11,7 +11,7 @@ Contents:
    installation.rst
    getting_started.rst
 
-   examples.rst
+   config.rst
 
    api/api.rst
 

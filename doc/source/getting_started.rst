@@ -1,13 +1,19 @@
 Getting Started
 ================
 
-What is CPLCom.
+Introduction
+-------------
 
-To use CPLCom, you need to fist install it, see :ref:`install-cplcom`.
+VetCond is a Moa based package for running the CPL conditioning
+experiment in the vet school.
 
-After it's installed, you can look at the :ref:`cplcom-examples` for examples
-on how to use it. You can find the complete documentation at :ref:`cplcom-api`.
+Usage
+------
 
-Following is a simple example::
+To use CPLCom, you first need to install it, see :ref:`install-vet_cond`.
 
-    >>> example
+After it's installed, it is run through the main module. For example::
+
+    python -m vet_cond.main
+
+Complete API documentation is at :ref:`vet_cond-root-api`.

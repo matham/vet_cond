@@ -1,4 +1,7 @@
-'''
+'''VetCond
+==========
+
+The CPL conditioning project in the vet school.
 '''
 
 

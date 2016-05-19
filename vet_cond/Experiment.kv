@@ -10,8 +10,7 @@
     on_started: if self.started: knspace.time_line.set_active_slice('Init')
     on_finished:
         if self.finished: knspace.time_line.set_active_slice('Done', after='Posthab')
-        if self.finished: knspace.gui_start_stop.state = 'normal'
-        if self.finished: app.root_stage = None
+        if self.finished: app.clean_up_root_stage()
     MoaStage:
         knsname: 'exp_dev_init'
         on_started: if self.started: root.init_devices()

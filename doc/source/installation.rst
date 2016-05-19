@@ -4,11 +4,16 @@
 Installation
 *************
 
-To install VetCond, Moa and its requirements must be installed first.
-Once installed, you can install vet_cond using::
+Dependencies
+-------------
 
-    pip install cplcom
+    * Python 2.7+
+    * `CPLCom <https://matham.github.io/cplcom/installation.html>`_
+    * `FFPyPlayer <https://matham.github.io/ffpyplayer/installation.html>`_
+    * `PyBarst <https://matham.github.io/pybarst/installation.html>`_
 
-or using cplcom master::
+VetCond
+-------
+After installing the dependencies VetCond can be installed using::
 
-    pip install https://github.com/matham/cplcom/archive/master.zip
+    pip install https://github.com/matham/vet_cond/archive/master.zip

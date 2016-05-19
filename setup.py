@@ -24,6 +24,7 @@ setup(
                  'Intended Audience :: Developers'],
     packages=find_packages(),
     install_requires=['moa', 'pybarst', 'ffpyplayer', 'cplcom'],
-    package_data={'vet_cond': ['../data/*', '*.kv']},
+    setup_requires=['moa', 'pybarst', 'ffpyplayer', 'cplcom'],
+    package_data={'vet_cond': ['data/*', '*.kv']},
     entry_points={'console_scripts': ['vet_cond=vet_cond.main:run_app']},
     )

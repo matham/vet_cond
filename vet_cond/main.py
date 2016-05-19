@@ -1,4 +1,7 @@
-'''The main module that starts the experiment.
+'''VetCond App
+===============
+
+The main module that starts the experiment.
 '''
 
 from functools import partial
@@ -21,27 +24,29 @@ class ConditioningApp(ExperimentApp):
     '''The app which runs the experiment.
     '''
 
-    timer = ObjectProperty(None)
-
     def __init__(self, **kwargs):
         super(ConditioningApp, self).__init__(**kwargs)
-        resource_add_path(join(dirname(dirname(__file__)), 'data'))
+        resource_add_path(join(dirname(__file__), 'data'))
         resource_add_path(join(dirname(dirname(__file__)), 'media'))
         Builder.load_file(join(dirname(__file__), 'Experiment.kv'))
         Builder.load_file(join(dirname(__file__), 'display.kv'))
-        self.data_directory = join(dirname(dirname(__file__)), 'data')
-
-    def start_stage(self, *largs, **kwargs):
-        super(ConditioningApp, self).start_stage(*largs, **kwargs)
-        if not self.root_stage:
-            knspace.gui_start_stop.state = 'normal'
+        self.data_directory = join(dirname(__file__), 'data')
 
     def set_json_file(self, path, selection, filename):
+        '''Sets the json config file when selected from the file browser.
+        '''
         if not isdir(path) or not filename:
             return
         self.json_config_path = join(path, filename)
 
+    def clean_up_root_stage(self):
+        super(ConditioningApp, self).clean_up_root_stage()
+        knspace.gui_start_stop.state = 'normal'
+
 run_app = partial(run_cpl_app, ConditioningApp)
+'''The function that starts the experiment GUI and the entry point for
+the main script.
+'''
 
 if __name__ == '__main__':
     run_app()
