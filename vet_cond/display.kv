@@ -1,16 +1,10 @@
 #@PydevCodeAnalysisIgnore
 #:import dirname os.path.dirname
 #:import join os.path.join
+#:import isfile os.path.isfile
 #:import knspace kivy.uix.behaviors.knspace.knspace
 
-<NamedGridLayout@KNSpaceBehavior+GridLayout>
-<KNTextInput@KNSpaceBehavior+TextInput>
 <StencilRelativeLayout@StencilView+RelativeLayout>
-
-<SpinnerOpt@SpinnerOption>:
-    padding_x: '10dp'
-    size_hint_x: None
-    width: self.texture_size[0]
 
 
 # the root level widget
@@ -30,61 +24,33 @@
                 width: self.minimum_width
                 height: '50dp'
                 spacing: '10dp'
-                ImageButton:
-                    size_hint_x: None
-                    width: self.height
-                    source: 'browse.png' if self.state == 'normal' else 'browse_down.png'
+                BrowseButton:
                     disabled: bool(knspace.exp_root) and knspace.exp_root.started and not knspace.exp_root.finished
-                    on_release:
-                        app.filebrowser.target = dirname(app.json_config_path)
-                        app.filebrowser.dirselect = False
-                        app.filebrowser.multiselect = False
-                        app.filebrowser.callback = app.set_json_file
-                        app.filebrowser.open()
-                KNToggleButton:
+                    id: browse
+                RecoverCheck:
+                    disabled: browse.disabled or not app.recovery_file or not isfile(app.recovery_file)
+                    id: recover
+                AppStartButton:
                     knsname: 'gui_start_stop'
                     id: gui_start_stop
-                    size_hint_x: None
-                    width: self.height
-                    background_normal: 'play.png'
-                    background_down: 'pause.png'
-                    background_disabled_normal: 'play.png'
-                    background_disabled_down: 'pause.png'
-                    background_color: [.2, .2, .2, 1] if self.disabled else [1, 1, 1, 1]
-                    on_release: app.start_stage() if self.state == 'down' else knspace.exp_animal and knspace.exp_animal.stop()
+                    on_release: app.start_stage(recover=recover.state == 'down') if self.state == 'down' else app.stop_experiment()
                     disabled:
                         bool(knspace.exp_dev_init) and knspace.exp_dev_init.started and not knspace.exp_dev_init.finished \
-                        or bool(knspace.exp_animal)and knspace.exp_animal.finishing and not knspace.exp_animal.finished \
-                        or bool(knspace.exp_dev_stop) and knspace.exp_dev_stop.started and not knspace.exp_dev_stop.finished
-                KNSpinner:
+                        or bool(knspace.exp_root) and knspace.exp_root.finishing and not knspace.exp_root.finished
+                ExperimentSelection:
                     id: gui_trial_type
-                    size_hint_x: None
-                    width: max(self.maximum_option_width, 75)
-                    padding_x: '10dp'
-                    option_cls: 'SpinnerOpt'
                     knsname: 'gui_trial_type'
                     disabled: not knspace.exp_animal_wait or not knspace.exp_animal_wait.started or knspace.exp_animal_wait.finished
                     values: sorted(knspace.exp_root.trial_opts.keys()) if knspace.exp_root else ['']
-                    text: self.values[0] if self.values else ''
-                    sync_height: True
                 KNTextInput:
                     knsname: 'gui_animal_id'
                     disabled: gui_trial_type.disabled
                     size_hint_x: None
                     width: '100dp'
-                KNButton:
-                    knsname: 'next_animal_dev'
+                ContinueButton:
+                    knsname: 'gui_next_animal'
                     disabled: gui_trial_type.disabled
-                    padding_x: '15dp'
-                    size_hint_x: None
-                    width: self.texture_size[0]
-                    text: 'Go'
-                    size_hint_x: None
-                    width: '100dp'
-                ErrorIndicator:
-                    size_hint_x: None
-                    width: self.height
-                    on_parent: app.error_indicator = self
+                AppErrorIndicator
             TimeLine
                 knsname: 'time_line'
             GridLayout:

@@ -21,14 +21,14 @@
     },
     "vet_cond.stages.RootStage": {
         "log_name_pat": [
-            "The pattern that will be used to generate the video filenames for each",
+            "The pattern that will be used to generate the log filenames for each",
             "trial. It is generated as follows::",
             "",
             "    strftime(log_name_pat.format(**{'animal': animal_id}))",
             "",
             "Which basically means that all instances of ``{animal}`` is replaced by the",
             "animal name given in the GUI. Then, it's is passed to `strftime` that",
-            "formats any time parameters to get the name used for that animal.",
+            "formats any time parameters to get the log name used for that animal.",
             "",
             "If the filename matches an existing file, the new data will be appended to",
             "that file.",

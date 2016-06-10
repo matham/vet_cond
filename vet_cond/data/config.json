@@ -16,51 +16,24 @@
         "trial_opts": {
             "backward": {
                 "duration": 0,
-                "iti": [
-                    45,
-                    60
-                ],
+                "iti": [45,60],
                 "repeat": 3,
-                "shock": [
-                    0,
-                    3
-                ],
-                "tone": [
-                    5,
-                    3
-                ]
+                "shock": [0,3],
+                "tone": [5,3]
             },
             "condition": {
                 "duration": 0,
-                "iti": [
-                    45,
-                    60
-                ],
+                "iti": [45,60],
                 "repeat": 3,
-                "shock": [
-                    2,
-                    3
-                ],
-                "tone": [
-                    0,
-                    3
-                ]
+                "shock": [2,3],
+                "tone": [0,3]
             },
             "control": {
                 "duration": 15,
-                "iti": [
-                    45,
-                    60
-                ],
+                "iti": [45,60],
                 "repeat": 3,
-                "shock": [
-                    0,
-                    0
-                ],
-                "tone": [
-                    0,
-                    0
-                ]
+                "shock": [0,0],
+                "tone": [0,0]
             }
         },
         "video_name_pat": "{animal}_trial{trial}_%m-%d-%Y_%I-%M-%S_%p.avi"

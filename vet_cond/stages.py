@@ -37,7 +37,8 @@ class RootStage(ConfigStageBase):
 
     server = ObjectProperty(None, allownone=True)
     '''The Barst server instance,
-    :class:`~cplcom.moa.device.barst_server.Server`.
+    :class:`~cplcom.moa.device.barst_server.Server`, or None when
+    :attr:`simulate`.
     '''
 
     mcdaq = ObjectProperty(None, allownone=True)
@@ -82,14 +83,14 @@ class RootStage(ConfigStageBase):
     '''
 
     log_name_pat = StringProperty('{animal}_%m-%d-%Y_%I-%M-%S_%p.csv')
-    '''The pattern that will be used to generate the video filenames for each
+    '''The pattern that will be used to generate the log filenames for each
     trial. It is generated as follows::
 
         strftime(log_name_pat.format(**{'animal': animal_id}))
 
     Which basically means that all instances of ``{animal}`` is replaced by the
     animal name given in the GUI. Then, it's is passed to `strftime` that
-    formats any time parameters to get the name used for that animal.
+    formats any time parameters to get the log name used for that animal.
 
     If the filename matches an existing file, the new data will be appended to
     that file.
@@ -228,6 +229,10 @@ class RootStage(ConfigStageBase):
     '''The filename of the current log file.
     '''
 
+    _shutting_down_devs = False
+    '''Whether we have or ere currently shutting down the devs.
+    '''
+
     @classmethod
     def get_config_classes(cls):
         d = {
@@ -239,6 +244,7 @@ class RootStage(ConfigStageBase):
 
     def clear(self, recurse=False, loop=False, **kwargs):
         super(RootStage, self).clear(recurse=recurse, loop=loop, **kwargs)
+        self._shutting_down_devs = False
         if not loop:
             self.tracker = self.server = self.mcdaq = self.rtv = None
             self.ffwriters = []
@@ -288,14 +294,16 @@ class RootStage(ConfigStageBase):
         rtv.fbind('on_data_update', self.video_callback)
 
         callbacks = [partial(d.activate, self) for d in devs[1:]]
-        callbacks.append(knspace.exp_dev_init.step_stage)
+        callbacks.append(knspace.exp_dev_init.ask_step_stage)
         tracker.add_func_links(devs, callbacks, 'activation', 'active')
         devs[0].activate(self)
 
-    @app_error
-    def stop_devices(self):
-        '''Called to stop the devices during the stopping stage.
-        '''
+    def step_stage(self, source=None, **kwargs):
+        if not self.started or (source is not None and source != self) or \
+                self._shutting_down_devs:
+            return super(RootStage, self).step_stage(source=source, **kwargs)
+
+        self._shutting_down_devs = True
         self.ffwriter = None
         if self._fd:
             self._fd.close()
@@ -308,14 +316,15 @@ class RootStage(ConfigStageBase):
         self.ffwriters = []
 
         if not devs:
-            knspace.exp_dev_stop.step_stage()
-            return
+            return super(RootStage, self).step_stage(source=source, **kwargs)
 
         tracker = self.tracker = ObjectStateTracker()
-        callbacks = [partial(d.deactivate, self) for d in devs[1:]]
-        callbacks.append(knspace.exp_dev_stop.step_stage)
-        tracker.add_func_links(devs, callbacks, 'activation', 'inactive')
-        devs[0].deactivate(self)
+        callbacks = [partial(d.deactivate, self, clear=True) for d in devs[1:]]
+        callbacks.append(partial(self.ask_step_stage, source=source, **kwargs))
+        tracker.add_func_links(devs, callbacks, 'activation', 'inactive',
+                               timeout=5.)
+        devs[0].deactivate(self, clear=True)
+        return False
 
     @app_error
     def configure_animal_settings(self):
@@ -367,11 +376,11 @@ class RootStage(ConfigStageBase):
 
             tracker = self.tracker = ObjectStateTracker()
             callbacks = [partial(d.activate, self) for d in w[1:]]
-            callbacks.append(knspace.exp_animal_init.step_stage)
+            callbacks.append(knspace.exp_animal_init.ask_step_stage)
             tracker.add_func_links(w, callbacks, 'activation', 'active')
             w[0].activate(self)
         else:
-            knspace.exp_animal_init.step_stage()
+            knspace.exp_animal_init.ask_step_stage()
 
     def video_callback(self, *largs):
         '''Called for each frame read from the viceo device.
