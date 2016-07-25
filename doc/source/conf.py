@@ -3,6 +3,7 @@
 from functools import partial
 
 import vet_cond
+import kivy
 from vet_cond.main import ConditioningApp
 from cplcom.config import create_doc_listener, write_config_attrs_rst
 
