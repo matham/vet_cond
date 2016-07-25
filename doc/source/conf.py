@@ -4,7 +4,7 @@ from functools import partial
 
 import vet_cond
 from vet_cond.main import ConditioningApp
-from cplcom.moa.config import create_doc_listener, write_config_attrs_rst
+from cplcom.config import create_doc_listener, write_config_attrs_rst
 
 extensions = [
     'sphinx.ext.autodoc',
