@@ -23,8 +23,7 @@ setup(
                  'Operating System :: Microsoft :: Windows',
                  'Intended Audience :: Developers'],
     packages=find_packages(),
-    install_requires=['moa', 'pybarst', 'ffpyplayer', 'cplcom'],
-    setup_requires=['moa', 'pybarst', 'ffpyplayer', 'cplcom'],
+    install_requires=['pymoa', 'pybarst', 'ffpyplayer', 'cplcom'],
     package_data={'vet_cond': ['data/*', '*.kv']},
     entry_points={'console_scripts': ['vet_cond=vet_cond.main:run_app']},
-    )
+)
