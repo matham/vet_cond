@@ -1,0 +1,388 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Stages &mdash; VetCond 0.1-dev documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="VetCond 0.1-dev documentation" href="../index.html" />
+    <link rel="up" title="The VetCond API" href="api.html" />
+    <link rel="next" title="VetCond App" href="main.html" />
+    <link rel="prev" title="Devices" href="devices.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <span class="target" id="module-vet_cond.stages"><span id="stages-api"></span></span><div class="section" id="stages">
+<h1>Stages<a class="headerlink" href="#stages" title="Permalink to this headline">¶</a></h1>
+<p>The stages of the experiment.</p>
+<dl class="class">
+<dt id="vet_cond.stages.RootStage">
+<em class="property">class </em><code class="descclassname">vet_cond.stages.</code><code class="descname">RootStage</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vet_cond.stages.RootStage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://matham.github.io/cplcom/api/moa/stages.html#cplcom.moa.stages.ConfigStageBase" title="(in CPLCom v0.1.1.dev0)"><code class="xref py py-class docutils literal"><span class="pre">cplcom.moa.stages.ConfigStageBase</span></code></a></p>
+<p>The root stage of the experiment.</p>
+<dl class="attribute">
+<dt id="vet_cond.stages.RootStage.animal_id">
+<code class="descname">animal_id</code><a class="headerlink" href="#vet_cond.stages.RootStage.animal_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>The animal name acquired form the GUI.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vet_cond.stages.RootStage.ffwriter">
+<code class="descname">ffwriter</code><em class="property"> = None</em><a class="headerlink" href="#vet_cond.stages.RootStage.ffwriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="#vet_cond.stages.RootStage.ffwriters" title="vet_cond.stages.RootStage.ffwriters"><code class="xref py py-attr docutils literal"><span class="pre">ffwriters</span></code></a> instance used in the current trial.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vet_cond.stages.RootStage.ffwriters">
+<code class="descname">ffwriters</code><em class="property"> = []</em><a class="headerlink" href="#vet_cond.stages.RootStage.ffwriters" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list of <a class="reference external" href="https://matham.github.io/cplcom/api/moa/device/ffplayer.html#cplcom.moa.device.ffplayer.FFPyWriterDevice" title="(in CPLCom v0.1.1.dev0)"><code class="xref py py-class docutils literal"><span class="pre">FFPyWriterDevice</span></code></a>
+instances equal to the number of trials, with each instance being a writer
+for the corresponding trial. They are all created at once at the start of
+running the subject.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vet_cond.stages.RootStage.frame_ts">
+<code class="descname">frame_ts</code><em class="property"> = 0</em><a class="headerlink" href="#vet_cond.stages.RootStage.frame_ts" title="Permalink to this definition">¶</a></dt>
+<dd><p>The video time at the most recent frame.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vet_cond.stages.RootStage.iti_range">
+<code class="descname">iti_range</code><a class="headerlink" href="#vet_cond.stages.RootStage.iti_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>The ITI range from <a class="reference internal" href="#vet_cond.stages.RootStage.trial_opts" title="vet_cond.stages.RootStage.trial_opts"><code class="xref py py-attr docutils literal"><span class="pre">trial_opts</span></code></a> for this animal.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vet_cond.stages.RootStage.log_name_pat">
+<code class="descname">log_name_pat</code><a class="headerlink" href="#vet_cond.stages.RootStage.log_name_pat" title="Permalink to this definition">¶</a></dt>
+<dd><p>The pattern that will be used to generate the log filenames for each
+trial. It is generated as follows:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">strftime</span><span class="p">(</span><span class="n">log_name_pat</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s1">&#39;animal&#39;</span><span class="p">:</span> <span class="n">animal_id</span><span class="p">}))</span>
+</pre></div>
+</div>
+<p>Which basically means that all instances of <code class="docutils literal"><span class="pre">{animal}</span></code> is replaced by the
+animal name given in the GUI. Then, it&#8217;s is passed to <cite>strftime</cite> that
+formats any time parameters to get the log name used for that animal.</p>
+<p>If the filename matches an existing file, the new data will be appended to
+that file.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vet_cond.stages.RootStage.mcdaq">
+<code class="descname">mcdaq</code><a class="headerlink" href="#vet_cond.stages.RootStage.mcdaq" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Switch and Sense device, <a class="reference internal" href="devices.html#vet_cond.devices.DAQOutDevice" title="vet_cond.devices.DAQOutDevice"><code class="xref py py-class docutils literal"><span class="pre">DAQOutDevice</span></code></a>
+when using actual hardware, or a
+<a class="reference internal" href="devices.html#vet_cond.devices.DAQOutDeviceSim" title="vet_cond.devices.DAQOutDeviceSim"><code class="xref py py-class docutils literal"><span class="pre">DAQOutDeviceSim</span></code></a> when <a class="reference internal" href="#vet_cond.stages.RootStage.simulate" title="vet_cond.stages.RootStage.simulate"><code class="xref py py-attr docutils literal"><span class="pre">simulate</span></code></a> the
+hardware.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vet_cond.stages.RootStage.posthab">
+<code class="descname">posthab</code><a class="headerlink" href="#vet_cond.stages.RootStage.posthab" title="Permalink to this definition">¶</a></dt>
+<dd><p>The amount of time to wait before finishing for the animal after the
+end of trials.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vet_cond.stages.RootStage.postrecord">
+<code class="descname">postrecord</code><a class="headerlink" href="#vet_cond.stages.RootStage.postrecord" title="Permalink to this definition">¶</a></dt>
+<dd><p>The amount of time after each trial which video should continue to be
+recorded. It is in addition to any ITI.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vet_cond.stages.RootStage.prehab">
+<code class="descname">prehab</code><a class="headerlink" href="#vet_cond.stages.RootStage.prehab" title="Permalink to this definition">¶</a></dt>
+<dd><p>The amount of time to wait habituating the animal before the start of
+trials.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vet_cond.stages.RootStage.prerecord">
+<code class="descname">prerecord</code><a class="headerlink" href="#vet_cond.stages.RootStage.prerecord" title="Permalink to this definition">¶</a></dt>
+<dd><p>The amount of time before each trial when video should be started
+being recorded. It is in addition to any ITI.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vet_cond.stages.RootStage.record_start">
+<code class="descname">record_start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vet_cond.stages.RootStage.record_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called at the start of each recording to init the recorders.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vet_cond.stages.RootStage.record_stop">
+<code class="descname">record_stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vet_cond.stages.RootStage.record_stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called at the end of each recording to stop the recorders.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vet_cond.stages.RootStage.record_video">
+<code class="descname">record_video</code><a class="headerlink" href="#vet_cond.stages.RootStage.record_video" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether video should be recorded for this experiment.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vet_cond.stages.RootStage.rtv">
+<code class="descname">rtv</code><a class="headerlink" href="#vet_cond.stages.RootStage.rtv" title="Permalink to this definition">¶</a></dt>
+<dd><p>The RTV video acquisition device
+<a class="reference external" href="https://matham.github.io/cplcom/api/moa/device/rtv.html#cplcom.moa.device.rtv.RTVChan" title="(in CPLCom v0.1.1.dev0)"><code class="xref py py-class docutils literal"><span class="pre">RTVChan</span></code></a> when using actual hardware, or a
+<a class="reference external" href="https://matham.github.io/cplcom/api/moa/device/ffplayer.html#cplcom.moa.device.ffplayer.FFPyPlayerDevice" title="(in CPLCom v0.1.1.dev0)"><code class="xref py py-class docutils literal"><span class="pre">FFPyPlayerDevice</span></code></a> when
+<a class="reference internal" href="#vet_cond.stages.RootStage.simulate" title="vet_cond.stages.RootStage.simulate"><code class="xref py py-attr docutils literal"><span class="pre">simulate</span></code></a> the hardware.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vet_cond.stages.RootStage.server">
+<code class="descname">server</code><a class="headerlink" href="#vet_cond.stages.RootStage.server" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Barst server instance,
+<a class="reference external" href="https://matham.github.io/cplcom/api/moa/device/barst_server.html#cplcom.moa.device.barst_server.Server" title="(in CPLCom v0.1.1.dev0)"><code class="xref py py-class docutils literal"><span class="pre">Server</span></code></a>, or None when
+<a class="reference internal" href="#vet_cond.stages.RootStage.simulate" title="vet_cond.stages.RootStage.simulate"><code class="xref py py-attr docutils literal"><span class="pre">simulate</span></code></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vet_cond.stages.RootStage.shock_delay">
+<code class="descname">shock_delay</code><a class="headerlink" href="#vet_cond.stages.RootStage.shock_delay" title="Permalink to this definition">¶</a></dt>
+<dd><p>The shock delay from <a class="reference internal" href="#vet_cond.stages.RootStage.trial_opts" title="vet_cond.stages.RootStage.trial_opts"><code class="xref py py-attr docutils literal"><span class="pre">trial_opts</span></code></a> for this animal.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vet_cond.stages.RootStage.shock_duration">
+<code class="descname">shock_duration</code><a class="headerlink" href="#vet_cond.stages.RootStage.shock_duration" title="Permalink to this definition">¶</a></dt>
+<dd><p>The shock duration from <a class="reference internal" href="#vet_cond.stages.RootStage.trial_opts" title="vet_cond.stages.RootStage.trial_opts"><code class="xref py py-attr docutils literal"><span class="pre">trial_opts</span></code></a> for this animal.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vet_cond.stages.RootStage.simulate">
+<code class="descname">simulate</code><a class="headerlink" href="#vet_cond.stages.RootStage.simulate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the user has chosen to simulate the experiment. When <code class="docutils literal"><span class="pre">True</span></code>,
+no actual hardware is required and all the hardware will be emulated
+by software and virtual devices. E.g. a video player for the video
+acquisition system.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vet_cond.stages.RootStage.tone_delay">
+<code class="descname">tone_delay</code><a class="headerlink" href="#vet_cond.stages.RootStage.tone_delay" title="Permalink to this definition">¶</a></dt>
+<dd><p>The tone delay from <a class="reference internal" href="#vet_cond.stages.RootStage.trial_opts" title="vet_cond.stages.RootStage.trial_opts"><code class="xref py py-attr docutils literal"><span class="pre">trial_opts</span></code></a> for this animal.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vet_cond.stages.RootStage.tone_duration">
+<code class="descname">tone_duration</code><a class="headerlink" href="#vet_cond.stages.RootStage.tone_duration" title="Permalink to this definition">¶</a></dt>
+<dd><p>The tone duration from <a class="reference internal" href="#vet_cond.stages.RootStage.trial_opts" title="vet_cond.stages.RootStage.trial_opts"><code class="xref py py-attr docutils literal"><span class="pre">trial_opts</span></code></a> for this animal.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vet_cond.stages.RootStage.tracker">
+<code class="descname">tracker</code><em class="property"> = None</em><a class="headerlink" href="#vet_cond.stages.RootStage.tracker" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference external" href="https://matham.github.io/moa/api/utils.html#moa.utils.ObjectStateTracker" title="(in Moa v0.2-dev)"><code class="xref py py-class docutils literal"><span class="pre">ObjectStateTracker</span></code></a> instance used to
+process the device activation and deactivation during startup and
+shutdown.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vet_cond.stages.RootStage.trial_duration">
+<code class="descname">trial_duration</code><a class="headerlink" href="#vet_cond.stages.RootStage.trial_duration" title="Permalink to this definition">¶</a></dt>
+<dd><p>The trial duration from <a class="reference internal" href="#vet_cond.stages.RootStage.trial_opts" title="vet_cond.stages.RootStage.trial_opts"><code class="xref py py-attr docutils literal"><span class="pre">trial_opts</span></code></a> for this animal.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vet_cond.stages.RootStage.trial_opts">
+<code class="descname">trial_opts</code><a class="headerlink" href="#vet_cond.stages.RootStage.trial_opts" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dictionary that describes the available experiments, which will be
+available from the GUI to choose from.</p>
+<p>The keys are name of the experiment types and its values are dictionaries
+describing the structure of each experiment type.</p>
+<p>The structure dictionaries each has the following keys:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><cite>repeat</cite>: int</dt>
+<dd>The number of trials for that experiment.</dd>
+<dt><cite>shock</cite>: 2-tuple of floats</dt>
+<dd>The first element is the delay from the start of the trial until
+the shock start. The second element is the duration of the shock
+after that delay. A duration of zero will disable the shock.</dd>
+<dt><cite>tone</cite>: 2-tuple of floats</dt>
+<dd>The first element is the delay from the start of the trial until
+the tone starts. The second element is the duration of the tone
+after that delay. A duration of zero will disable the tone.</dd>
+<dt><cite>iti</cite>: 2-tuple of floats</dt>
+<dd>The minimum and maximum duration of the ITI. A value will be chosen
+uniformly at random from that range.</dd>
+<dt><cite>duration</cite>: float</dt>
+<dd>The duration of the trial.</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vet_cond.stages.RootStage.trial_repeat">
+<code class="descname">trial_repeat</code><a class="headerlink" href="#vet_cond.stages.RootStage.trial_repeat" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of trials from <a class="reference internal" href="#vet_cond.stages.RootStage.trial_opts" title="vet_cond.stages.RootStage.trial_opts"><code class="xref py py-attr docutils literal"><span class="pre">trial_opts</span></code></a> for this animal.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vet_cond.stages.RootStage.trial_stats">
+<code class="descname">trial_stats</code><a class="headerlink" href="#vet_cond.stages.RootStage.trial_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trials stats of the tone, shock, and trial start and end times in video
+time use for the log.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vet_cond.stages.RootStage.trial_type">
+<code class="descname">trial_type</code><a class="headerlink" href="#vet_cond.stages.RootStage.trial_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>The experiment type from <a class="reference internal" href="#vet_cond.stages.RootStage.trial_opts" title="vet_cond.stages.RootStage.trial_opts"><code class="xref py py-attr docutils literal"><span class="pre">trial_opts</span></code></a> for this animal.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vet_cond.stages.RootStage.update_time">
+<code class="descname">update_time</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#vet_cond.stages.RootStage.update_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates trial stats when an event occurs.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vet_cond.stages.RootStage.video_callback">
+<code class="descname">video_callback</code><span class="sig-paren">(</span><em>*largs</em><span class="sig-paren">)</span><a class="headerlink" href="#vet_cond.stages.RootStage.video_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called for each frame read from the viceo device.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vet_cond.stages.RootStage.video_name_pat">
+<code class="descname">video_name_pat</code><a class="headerlink" href="#vet_cond.stages.RootStage.video_name_pat" title="Permalink to this definition">¶</a></dt>
+<dd><p>The pattern that will be used to generate the video filenames for each
+trial. It is generated as follows:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">name</span> <span class="o">=</span> <span class="n">strftime</span><span class="p">(</span><span class="n">video_name_pat</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s1">&#39;trial&#39;</span><span class="p">:</span> <span class="n">trial_number</span><span class="p">,</span>
+                <span class="s1">&#39;animal&#39;</span><span class="p">:</span> <span class="n">animal_id</span><span class="p">}))</span>
+</pre></div>
+</div>
+<p>Which basically means that all instances of <code class="docutils literal"><span class="pre">{trial}</span></code> is replaced by
+the current trial number and <code class="docutils literal"><span class="pre">{animal}</span></code> is replaced by the animal
+name given in the GUI. Then, it&#8217;s is passed to <cite>strftime</cite> that formats
+any time parameters to get the name used for that trial/animal.</p>
+<p>If the filename already exists an error will be raised.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">VetCond</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=matham&repo=vet_cond&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../config.html">vet_cond Config</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">The VetCond API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="vet_cond.html">VetCond</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Stages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">VetCond App</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="api.html">The VetCond API</a><ul>
+      <li>Previous: <a href="devices.html" title="previous chapter">Devices</a></li>
+      <li>Next: <a href="main.html" title="next chapter">VetCond App</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/stages.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/api/stages.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/matham/vet_cond" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
