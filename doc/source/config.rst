@@ -85,8 +85,7 @@ vet_cond Config
          The minimum and maximum duration of the ITI. A value will be chosen
          uniformly at random from that range.
      `duration`: float
-         The duration of the trial. This is used when both shock and tone
-         are disabled and the trial is then is just a delay of this length.
+         The duration of the trial.
  
 `video_name_pat`: {animal}_trial{trial}_%m-%d-%Y_%I-%M-%S_%p.avi
  The pattern that will be used to generate the video filenames for each

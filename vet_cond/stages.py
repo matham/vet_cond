@@ -149,8 +149,7 @@ class RootStage(ConfigStageBase):
             The minimum and maximum duration of the ITI. A value will be chosen
             uniformly at random from that range.
         `duration`: float
-            The duration of the trial. This is used when both shock and tone
-            are disabled and the trial is then is just a delay of this length.
+            The duration of the trial.
     '''
 
     def on_trial_opts(self, *largs):

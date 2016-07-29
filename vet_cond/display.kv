@@ -24,6 +24,9 @@
                 width: self.minimum_width
                 height: '50dp'
                 spacing: '10dp'
+                canvas:
+                    Color:
+                        rgba: 1, 1, 1, 1
                 BrowseButton:
                     disabled: bool(knspace.exp_root) and knspace.exp_root.started and not knspace.exp_root.finished
                     id: browse

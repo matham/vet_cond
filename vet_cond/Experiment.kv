@@ -49,9 +49,14 @@
                 knsname: 'exp_trial'
                 order: 'parallel'
                 delay: root.trial_duration
+                completion_list: [self]
+                on_delay: knspace.time_line.update_slice_attrs('Trial', duration=self.delay)
                 on_stage_start:
                     root.update_time('trial_ts')
                     knspace.time_line.set_active_slice('Trial')
+                on_trial_end:
+                    knspace.mcdaq.set_state(low=['shocker'])
+                    knspace.mcdaq.set_state(low=['tone'])
                 MoaStage:
                     knsname: 'exp_shock_root'
                     disabled: not root.shock_duration
